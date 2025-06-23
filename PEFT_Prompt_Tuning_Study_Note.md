@@ -114,3 +114,21 @@ os.makedirs(path, exist_ok=True)
 - 尝试添加 Gradio 推理 Demo
 - 总结训练日志与对比结果
 - 准备下一个项目：LoRA 微调 / ChatGLM 指令训练
+
+## 项目描述
+使用transformers和peft库，对bloomz模型做Prompt Finetuning文本生成任务CAUSAL_LM。
+### 数据集
+使用[`fka/awesome-chatgpt-prompts`](https://huggingface.co/datasets/fka/awesome-chatgpt-prompts)和[`Abirate/english_quotes`](https://huggingface.co/datasets/Abirate/english_quotes)。
+### 基础模型
+tokenizer和基础模型使用"bigscience/bloomz-560m"。
+### 配置
+使用PromptTuningConfig配置相关参数：
+```python
+generation_config = PromptTuningConfig(
+    task_type=TaskType.CAUSAL_LM, # This type indicates the model will generate text.
+    prompt_tuning_init=PromptTuningInit.RANDOM, # The added virtual tokens are initialized with random numbers
+    num_virtual_tokens=NUM_VIRTUAL_TOKENS, # Number of virtual tokens to be added and trained.
+    tokenizer_name_or_path=model_name
+)
+```
+Trainer使用DataCollatorForLanguageModeling作为数据整理器
